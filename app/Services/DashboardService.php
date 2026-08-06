@@ -6,14 +6,12 @@ use App\Models\Exam;
 use App\Models\Participant;
 use App\Models\Question;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class DashboardService
 {
     /**
      * Get dashboard statistics for a specific user.
-     *
-     * @param int $userId
-     * @return array
      */
     public function getUserDashboardStats(int $userId): array
     {
@@ -29,24 +27,21 @@ class DashboardService
 
     /**
      * Get dashboard statistics for admin.
-     *
-     * @return array
      */
     public function getAdminDashboardStats(): array
     {
         return [
-            'total_questions'    => Question::count(),
-            'total_exams'        => Exam::count(),
+            'total_questions' => Question::count(),
+            'total_exams' => Exam::count(),
             'total_participants' => Participant::count(),
-            'total_users'        => User::where('role', 'user')->count(),
+            'total_users' => User::where('role', 'user')->count(),
         ];
     }
 
     /**
      * Get recent exams for admin dashboard.
      *
-     * @param int $limit
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getRecentExams(int $limit = 5)
     {

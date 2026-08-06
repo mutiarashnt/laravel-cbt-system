@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
-            'user' => UserMiddleware::class
+            'user' => UserMiddleware::class,
         ]);
 
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);

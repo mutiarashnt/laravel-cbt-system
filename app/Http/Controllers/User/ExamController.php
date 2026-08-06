@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Exam;
 use App\Models\Participant;
 use App\Services\ExamService;
+use App\Services\ParticipantService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -86,7 +87,7 @@ class ExamController extends Controller
         // Logic for starting exam should ideally be in ParticipantController or ParticipantService,
         // but since we are just marking it as started here if it's registered:
         if ($participant->status === 'registered') {
-            app(\App\Services\ParticipantService::class)->startExam($participant);
+            app(ParticipantService::class)->startExam($participant);
         }
 
         $exam->load(['questions.choices']);

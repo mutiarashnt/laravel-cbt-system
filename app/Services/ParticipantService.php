@@ -12,10 +12,6 @@ class ParticipantService
 {
     /**
      * Register a user for an exam.
-     *
-     * @param int $userId
-     * @param int $examId
-     * @return Participant
      */
     public function registerForExam(int $userId, int $examId): Participant
     {
@@ -37,9 +33,6 @@ class ParticipantService
 
     /**
      * Start the exam session for a participant.
-     *
-     * @param Participant $participant
-     * @return void
      */
     public function startExam(Participant $participant): void
     {
@@ -53,10 +46,6 @@ class ParticipantService
 
     /**
      * Submit answers and calculate score/grade.
-     *
-     * @param array $answersData
-     * @param Participant $participant
-     * @return void
      */
     public function submitExam(array $answersData, Participant $participant): void
     {

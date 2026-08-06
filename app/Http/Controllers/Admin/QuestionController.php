@@ -26,11 +26,11 @@ class QuestionController extends Controller
     public function index(): Response
     {
         $questions = $this->questionService->getAllWithRelations();
-        $subjects  = $this->questionService->getAllSubjectsWithQuestionCount();
+        $subjects = $this->questionService->getAllSubjectsWithQuestionCount();
 
         return Inertia::render('admin/questions/index', [
             'questions' => $questions,
-            'subjects'  => $subjects,
+            'subjects' => $subjects,
         ]);
     }
 

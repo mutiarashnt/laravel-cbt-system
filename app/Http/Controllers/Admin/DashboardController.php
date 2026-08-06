@@ -18,11 +18,11 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
-        $stats       = $this->dashboardService->getAdminDashboardStats();
+        $stats = $this->dashboardService->getAdminDashboardStats();
         $recentExams = $this->dashboardService->getRecentExams();
 
         return Inertia::render('admin/dashboard', [
-            'stats'       => $stats,
+            'stats' => $stats,
             'recentExams' => $recentExams,
         ]);
     }

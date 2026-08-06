@@ -10,9 +10,6 @@ class ExamService
 {
     /**
      * Get published exams and their participant status for a specific user.
-     *
-     * @param int $userId
-     * @return Collection
      */
     public function getPublishedExamsForUser(int $userId): Collection
     {
@@ -33,14 +30,10 @@ class ExamService
 
     /**
      * Get exam details and format the results if the user has finished.
-     *
-     * @param Exam $exam
-     * @param Participant|null $participant
-     * @return array|null
      */
     public function getExamResultData(Exam $exam, ?Participant $participant): ?array
     {
-        if (!$participant || $participant->status !== 'finished') {
+        if (! $participant || $participant->status !== 'finished') {
             return null;
         }
 

@@ -42,15 +42,15 @@ class QuestionService
     {
         $question = Question::create([
             'subject_id' => $data['subject_id'] ?? null,
-            'question'   => $data['question'],
-            'type'       => $data['type'] ?? 'multiple_choice',
+            'question' => $data['question'],
+            'type' => $data['type'] ?? 'multiple_choice',
             'created_by' => auth()->id(),
         ]);
 
         foreach ($data['choices'] as $index => $choiceText) {
             $question->choices()->create([
                 'choice_text' => $choiceText,
-                'is_correct'  => ($index == $data['correct_answer']),
+                'is_correct' => ($index == $data['correct_answer']),
             ]);
         }
 
@@ -64,8 +64,8 @@ class QuestionService
     {
         $question->update([
             'subject_id' => $data['subject_id'] ?? null,
-            'question'   => $data['question'],
-            'type'       => $data['type'] ?? $question->type,
+            'question' => $data['question'],
+            'type' => $data['type'] ?? $question->type,
         ]);
 
         $question->choices()->delete();
@@ -73,7 +73,7 @@ class QuestionService
         foreach ($data['choices'] as $index => $choiceText) {
             $question->choices()->create([
                 'choice_text' => $choiceText,
-                'is_correct'  => ($index == $data['correct_answer']),
+                'is_correct' => ($index == $data['correct_answer']),
             ]);
         }
 

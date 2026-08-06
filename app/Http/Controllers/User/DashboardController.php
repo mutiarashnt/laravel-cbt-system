@@ -11,6 +11,7 @@ use Inertia\Response;
 class DashboardController extends Controller
 {
     protected DashboardService $dashboardService;
+
     protected ExamService $examService;
 
     public function __construct(DashboardService $dashboardService, ExamService $examService)

@@ -77,8 +77,8 @@ class ExamController extends Controller
         $allQuestions = $this->adminExamService->getAllQuestions();
 
         return Inertia::render('admin/exams/edit', [
-            'exam'                => $exam,
-            'questions'           => $allQuestions,
+            'exam' => $exam,
+            'questions' => $allQuestions,
             'selectedQuestionIds' => $exam->questions->pluck('id')->toArray(),
         ]);
     }

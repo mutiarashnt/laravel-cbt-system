@@ -32,11 +32,11 @@ class AdminExamService
     public function store(array $data): Exam
     {
         $exam = Exam::create([
-            'title'       => $data['title'],
+            'title' => $data['title'],
             'description' => $data['description'] ?? null,
-            'duration'    => $data['duration'],
-            'status'      => $data['status'],
-            'created_by'  => auth()->id(),
+            'duration' => $data['duration'],
+            'status' => $data['status'],
+            'created_by' => auth()->id(),
         ]);
 
         if (! empty($data['question_ids'])) {
@@ -52,10 +52,10 @@ class AdminExamService
     public function update(Exam $exam, array $data): Exam
     {
         $exam->update([
-            'title'       => $data['title'],
+            'title' => $data['title'],
             'description' => $data['description'] ?? null,
-            'duration'    => $data['duration'],
-            'status'      => $data['status'],
+            'duration' => $data['duration'],
+            'status' => $data['status'],
         ]);
 
         if (isset($data['question_ids'])) {
