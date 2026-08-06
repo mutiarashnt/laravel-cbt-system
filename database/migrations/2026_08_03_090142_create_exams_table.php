@@ -18,9 +18,9 @@ return new class extends Migration
 
             $table->integer('duration');
 
-            $table->enum('status',[
+            $table->enum('status', [
                 'draft',
-                'published'
+                'published',
             ])->default('draft');
 
             $table->foreignId('created_by')

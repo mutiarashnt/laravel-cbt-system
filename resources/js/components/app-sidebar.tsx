@@ -1,6 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, ClipboardList, BarChart3, Users } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, LayoutGrid, ClipboardList, PenTool, FolderKanban } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -13,14 +12,18 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import type { NavItem, SharedData } from '@/types';
 
-const mainNavItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/admin/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Mata Pelajaran',
+        href: '/admin/subjects',
+        icon: FolderKanban,
     },
     {
         title: 'Bank Soal',
@@ -28,35 +31,41 @@ const mainNavItems: NavItem[] = [
         icon: BookOpen,
     },
     {
-        title: 'Ujian',
+        title: 'Kelola Ujian',
         href: '/admin/exams',
         icon: ClipboardList,
     },
+];
+
+const userNavItems: NavItem[] = [
     {
-        title: 'Hasil',
-        href: '/admin/results',
-        icon: BarChart3,
+        title: 'Dashboard',
+        href: '/user/dashboard',
+        icon: LayoutGrid,
     },
     {
-        title: 'User',
-        href: '/admin/users',
-        icon: Users,
+        title: 'Daftar Ujian',
+        href: '/user/exams',
+        icon: PenTool,
     },
 ];
 
-const footerNavItems: NavItem[] = [];
-
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+    const isAdmin = auth.user?.role === 'admin';
+    const navItems = isAdmin ? adminNavItems : userNavItems;
+    const dashboardUrl = isAdmin ? '/admin/dashboard' : '/user/dashboard';
+    const appTitle = isAdmin ? 'CBT Admin' : 'CBT Peserta';
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                {/* <AppLogo /> */}
+                            <Link href={dashboardUrl} prefetch>
                                 <div className="flex flex-col">
-                                    <span className="font-bold text-lg">CBT Admin</span>
+                                    <span className="font-bold text-lg">{appTitle}</span>
                                     <span className="text-xs text-gray-500">
                                         Sistem Ujian Online
                                     </span>
@@ -68,13 +77,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={navItems} />
             </SidebarContent>
 
             <SidebarFooter>
-                {footerNavItems.length > 0 && (
-                    <NavFooter items={footerNavItems} className="mt-auto" />
-                )}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

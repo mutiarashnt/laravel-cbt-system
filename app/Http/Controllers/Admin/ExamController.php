@@ -3,63 +3,105 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreExamRequest;
+use App\Http\Requests\Admin\UpdateExamRequest;
+use App\Models\Exam;
+use App\Services\AdminExamService;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected AdminExamService $adminExamService;
+
+    public function __construct(AdminExamService $adminExamService)
     {
-        //
+        $this->adminExamService = $adminExamService;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of exams.
      */
-    public function create()
+    public function index(): Response
     {
-        //
+        $exams = $this->adminExamService->getAll();
+
+        return Inertia::render('admin/exams/index', [
+            'exams' => $exams,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show form to create exam.
      */
-    public function store(Request $request)
+    public function create(): Response
     {
-        //
+        $questions = $this->adminExamService->getAllQuestions();
+
+        return Inertia::render('admin/exams/create', [
+            'questions' => $questions,
+        ]);
     }
 
     /**
-     * Display the specified resource.
+     * Store new exam.
      */
-    public function show(string $id)
+    public function store(StoreExamRequest $request): RedirectResponse
     {
-        //
+        $this->adminExamService->store($request->validated());
+
+        return redirect()
+            ->route('admin.exams.index')
+            ->with('success', 'Ujian berhasil dibuat.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified exam with details.
      */
-    public function edit(string $id)
+    public function show(Exam $exam): Response
     {
-        //
+        $exam->load(['questions.choices', 'questions.subject', 'participants.user']);
+
+        return Inertia::render('admin/exams/show', [
+            'exam' => $exam,
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show form to edit exam.
      */
-    public function update(Request $request, string $id)
+    public function edit(Exam $exam): Response
     {
-        //
+        $exam->load('questions');
+        $allQuestions = $this->adminExamService->getAllQuestions();
+
+        return Inertia::render('admin/exams/edit', [
+            'exam'                => $exam,
+            'questions'           => $allQuestions,
+            'selectedQuestionIds' => $exam->questions->pluck('id')->toArray(),
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update exam.
      */
-    public function destroy(string $id)
+    public function update(UpdateExamRequest $request, Exam $exam): RedirectResponse
     {
-        //
+        $this->adminExamService->update($exam, $request->validated());
+
+        return redirect()
+            ->route('admin.exams.index')
+            ->with('success', 'Ujian berhasil diperbarui.');
+    }
+
+    /**
+     * Remove exam.
+     */
+    public function destroy(Exam $exam): RedirectResponse
+    {
+        $this->adminExamService->destroy($exam);
+
+        return back()->with('success', 'Ujian berhasil dihapus.');
     }
 }

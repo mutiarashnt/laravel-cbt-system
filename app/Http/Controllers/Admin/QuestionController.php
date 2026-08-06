@@ -3,137 +3,94 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreQuestionRequest;
+use App\Http\Requests\Admin\UpdateQuestionRequest;
 use App\Models\Question;
-use Illuminate\Http\Request;
+use App\Services\QuestionService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class QuestionController extends Controller
 {
+    protected QuestionService $questionService;
+
+    public function __construct(QuestionService $questionService)
+    {
+        $this->questionService = $questionService;
+    }
+
     /**
      * Menampilkan semua soal
      */
-    public function index()
+    public function index(): Response
     {
-        $questions = Question::with('choices')
-            ->latest()
-            ->get();
+        $questions = $this->questionService->getAllWithRelations();
+        $subjects  = $this->questionService->getAllSubjectsWithQuestionCount();
 
         return Inertia::render('admin/questions/index', [
-            'questions' => $questions
+            'questions' => $questions,
+            'subjects'  => $subjects,
         ]);
     }
-
 
     /**
      * Form tambah soal
      */
-    public function create()
+    public function create(): Response
     {
-        return Inertia::render('admin/questions/create');
-    }
+        $subjects = $this->questionService->getAllSubjects();
 
+        return Inertia::render('admin/questions/create', [
+            'subjects' => $subjects,
+        ]);
+    }
 
     /**
      * Simpan soal baru
      */
-    public function store(Request $request)
+    public function store(StoreQuestionRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'question' => 'required|string',
-            'choices' => 'required|array|min:2',
-            'correct_answer' => 'required|integer',
-        ]);
-
-
-        $question = Question::create([
-            'question' => $validated['question'],
-            'type' => 'multiple_choice',
-            'created_by' => auth()->id(),
-        ]);
-
-
-        foreach ($validated['choices'] as $index => $choice) {
-
-            $question->choices()->create([
-                'choice_text' => $choice,
-                'is_correct' =>
-                    $index == $validated['correct_answer'],
-            ]);
-
-        }
-
+        $this->questionService->store($request->validated());
 
         return redirect()
             ->route('admin.questions.index')
-            ->with('success','Soal berhasil dibuat');
+            ->with('success', 'Soal berhasil dibuat.');
     }
-
 
     /**
-     * Form edit
+     * Form edit soal
      */
-    public function edit(Question $question)
+    public function edit(Question $question): Response
     {
-        $question->load('choices');
+        $question->load(['choices', 'subject']);
+        $subjects = $this->questionService->getAllSubjects();
 
-        return Inertia::render(
-            'admin/questions/edit',
-            [
-                'question'=>$question
-            ]
-        );
+        return Inertia::render('admin/questions/edit', [
+            'question' => $question,
+            'subjects' => $subjects,
+        ]);
     }
-
 
     /**
      * Update soal
      */
-    public function update(
-        Request $request,
-        Question $question
-    )
+    public function update(UpdateQuestionRequest $request, Question $question): RedirectResponse
     {
-
-        $validated=$request->validate([
-            'question'=>'required|string',
-            'choices'=>'required|array',
-            'correct_answer'=>'required|integer',
-        ]);
-
-
-        $question->update([
-            'question'=>$validated['question']
-        ]);
-
-
-        $question->choices()->delete();
-
-
-        foreach($validated['choices'] as $index=>$choice){
-
-            $question->choices()->create([
-                'choice_text'=>$choice,
-                'is_correct'=>
-                    $index==$validated['correct_answer']
-            ]);
-
-        }
-
+        $this->questionService->update($question, $request->validated());
 
         return redirect()
-            ->route('admin.questions.index');
+            ->route('admin.questions.index')
+            ->with('success', 'Soal berhasil diperbarui.');
     }
-
-
 
     /**
      * Hapus soal
      */
-    public function destroy(Question $question)
+    public function destroy(Question $question): RedirectResponse
     {
-        $question->delete();
+        $this->questionService->destroy($question);
 
-
-        return back();
+        return back()->with('success', 'Soal berhasil dihapus.');
     }
 }

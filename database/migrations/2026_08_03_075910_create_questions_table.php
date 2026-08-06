@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->enum('type', [
                 'multiple_choice',
-                'essay'
+                'essay',
             ])->default('multiple_choice');
 
             $table->foreignId('created_by')
