@@ -1,6 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { BookOpen, ShieldCheck, Zap, MonitorSmartphone, ArrowRight } from 'lucide-react';
 import { dashboard, login, register } from '@/routes';
-import { BookOpen, ShieldCheck, Zap, MonitorSmartphone, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export default function Welcome() {
     const { auth } = usePage().props;
@@ -8,9 +8,9 @@ export default function Welcome() {
     return (
         <>
             <Head title="Selamat Datang di CBT Online" />
-            
+
             <div className="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 selection:bg-primary selection:text-primary-foreground">
-                
+
                 {/* Navbar */}
                 <header className="fixed inset-x-0 top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
                     <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
@@ -101,7 +101,7 @@ export default function Welcome() {
                         </div>
                         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-                                
+
                                 {/* Feature 1 */}
                                 <div className="flex flex-col rounded-2xl bg-white dark:bg-gray-900 p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-800 transition-all hover:shadow-md hover:-translate-y-1">
                                     <dt className="flex items-center gap-x-3 text-lg font-semibold leading-7 text-gray-900 dark:text-white">
@@ -140,7 +140,7 @@ export default function Welcome() {
                                         <p className="flex-auto">Tersedia bank soal yang dikategorikan sesuai mata pelajaran dan mudah diakses oleh peserta di dashboard interaktif.</p>
                                     </dd>
                                 </div>
-                                
+
                             </dl>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link } from '@inertiajs/react';
 import { BookOpen, ClipboardList, Users, UserCheck, Plus } from 'lucide-react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Exam } from '@/types';
 
 interface Stats {

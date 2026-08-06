@@ -1,4 +1,3 @@
-import UserLayout from '@/layouts/user-layout';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
@@ -14,8 +13,9 @@ import {
     ChevronUp,
     Minus,
 } from 'lucide-react';
-import type { Exam, Participant, ExamResult } from '@/types/cbt';
 import { useState } from 'react';
+import UserLayout from '@/layouts/user-layout';
+import type { Exam, Participant, ExamResult } from '@/types/cbt';
 
 interface Props {
     exam: Exam;
@@ -24,16 +24,34 @@ interface Props {
 }
 
 function GradeColor(grade: number): { bg: string; text: string; badge: string } {
-    if (grade >= 90) return { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-800' };
-    if (grade >= 75) return { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-800' };
-    if (grade >= 60) return { bg: 'bg-yellow-50 border-yellow-200', text: 'text-yellow-700', badge: 'bg-yellow-100 text-yellow-800' };
+    if (grade >= 90) {
+return { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-800' };
+}
+
+    if (grade >= 75) {
+return { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-800' };
+}
+
+    if (grade >= 60) {
+return { bg: 'bg-yellow-50 border-yellow-200', text: 'text-yellow-700', badge: 'bg-yellow-100 text-yellow-800' };
+}
+
     return { bg: 'bg-red-50 border-red-200', text: 'text-red-700', badge: 'bg-red-100 text-red-800' };
 }
 
 function GradeLabel(grade: number): string {
-    if (grade >= 90) return 'Sangat Baik';
-    if (grade >= 75) return 'Baik';
-    if (grade >= 60) return 'Cukup';
+    if (grade >= 90) {
+return 'Sangat Baik';
+}
+
+    if (grade >= 75) {
+return 'Baik';
+}
+
+    if (grade >= 60) {
+return 'Cukup';
+}
+
     return 'Kurang';
 }
 
@@ -51,7 +69,10 @@ export default function Show({ exam, participant, result }: Props) {
     };
 
     const handleStart = () => {
-        if (!participant) return;
+        if (!participant) {
+return;
+}
+
         router.post(`/user/participants/${participant.id}/start`);
     };
 
@@ -277,6 +298,7 @@ export default function Show({ exam, participant, result }: Props) {
                                             <div className="ml-8 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                                                 {answer.choices.map((choice) => {
                                                     const isChosen = choice.choice_text === answer.chosen_choice_text;
+
                                                     return (
                                                         <div
                                                             key={choice.id}

@@ -1,6 +1,6 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Trash2, Edit, Eye, Clock, HelpCircle, Users } from 'lucide-react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Exam } from '@/types';
 
 interface Props {

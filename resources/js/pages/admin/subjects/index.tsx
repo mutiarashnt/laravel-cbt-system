@@ -1,7 +1,8 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, useForm, router } from '@inertiajs/react';
 import { Plus, Edit2, Trash2, BookOpen, FolderKanban, X, Check } from 'lucide-react';
-import { useState, FormEvent } from 'react';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Subject } from '@/types/cbt';
 
 interface Props {
@@ -47,6 +48,7 @@ export default function Index({ subjects }: Props) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
+
         if (editingSubject) {
             put(`/admin/subjects/${editingSubject.id}`, {
                 onSuccess: () => closeModal(),

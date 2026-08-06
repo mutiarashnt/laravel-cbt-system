@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
-import { Clock, AlertTriangle, Send, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { Clock, Send, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Exam, Participant } from '@/types';
 
 interface ExistingAnswer {
@@ -28,6 +28,7 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                 answer_text: ans.answer_text,
             };
         });
+
         return initialMap;
     });
 
@@ -35,61 +36,22 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
 
     // Timer calculation
     const [timeLeft, setTimeLeft] = useState<number>(() => {
-        if (!participant.started_at) return exam.duration * 60;
+        if (!participant.started_at) {
+            return exam.duration * 60;
+        }
+
         const startTime = new Date(participant.started_at).getTime();
         const endTime = startTime + exam.duration * 60 * 1000;
         const remaining = Math.floor((endTime - Date.now()) / 1000);
+
         return remaining > 0 ? remaining : 0;
     });
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(timer);
-                    handleSubmitAnswers();
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
-
-    const formatTimer = (seconds: number) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    };
-
-    const currentQuestion = questions[currentIndex];
-    const currentAnswer = answersMap[currentQuestion?.id] || { choice_id: null, answer_text: null };
-
-    const handleSelectChoice = (choiceId: number) => {
-        if (!currentQuestion) return;
-        setAnswersMap((prev) => ({
-            ...prev,
-            [currentQuestion.id]: {
-                choice_id: choiceId,
-                answer_text: null,
-            },
-        }));
-    };
-
-    const handleEssayChange = (text: string) => {
-        if (!currentQuestion) return;
-        setAnswersMap((prev) => ({
-            ...prev,
-            [currentQuestion.id]: {
-                choice_id: null,
-                answer_text: text,
-            },
-        }));
-    };
-
-    const handleSubmitAnswers = () => {
-        if (isSubmitting) return;
+    // Deklarasikan handleSubmitAnswers SEBELUM digunakan di useEffect
+    const handleSubmitAnswers = useCallback(() => {
+        if (isSubmitting) {
+            return;
+        }
 
         const payload = {
             answers: Object.entries(answersMap).map(([questionId, val]) => ({
@@ -103,10 +65,66 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
         router.post(`/user/participants/${participant.id}/submit`, payload, {
             onFinish: () => setIsSubmitting(false),
         });
+    }, [isSubmitting, answersMap, participant.id]);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    handleSubmitAnswers();
+
+                    return 0;
+                }
+
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [handleSubmitAnswers]);
+
+    const formatTimer = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const currentQuestion = questions[currentIndex];
+    const currentAnswer = answersMap[currentQuestion?.id] || { choice_id: null, answer_text: null };
+
+    const handleSelectChoice = (choiceId: number) => {
+        if (!currentQuestion) {
+            return;
+        }
+
+        setAnswersMap((prev) => ({
+            ...prev,
+            [currentQuestion.id]: {
+                choice_id: choiceId,
+                answer_text: null,
+            },
+        }));
+    };
+
+    const handleEssayChange = (text: string) => {
+        if (!currentQuestion) {
+            return;
+        }
+
+        setAnswersMap((prev) => ({
+            ...prev,
+            [currentQuestion.id]: {
+                choice_id: null,
+                answer_text: text,
+            },
+        }));
     };
 
     const confirmSubmit = () => {
         const totalAnswered = Object.values(answersMap).filter((a) => a.choice_id !== null || (a.answer_text && a.answer_text.trim() !== '')).length;
+
         if (confirm(`Anda telah menjawab ${totalAnswered} dari ${questions.length} soal. Apakah Anda yakin ingin menyelesaikan ujian?`)) {
             handleSubmitAnswers();
         }
@@ -133,9 +151,8 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
 
                 <div className="flex items-center gap-4">
                     <div
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono text-sm font-bold ${
-                            timeLeft < 300 ? 'bg-red-50 text-red-600 border-red-200 animate-pulse' : 'bg-muted/50 text-foreground'
-                        }`}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono text-sm font-bold ${timeLeft < 300 ? 'bg-red-50 text-red-600 border-red-200 animate-pulse' : 'bg-muted/50 text-foreground'
+                            }`}
                     >
                         <Clock className="h-4 w-4" />
                         <span>Sisa Waktu: {formatTimer(timeLeft)}</span>
@@ -183,18 +200,16 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                                             <label
                                                 key={choice.id}
                                                 onClick={() => handleSelectChoice(choice.id)}
-                                                className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                                                    isSelected
-                                                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                                                        : 'hover:border-gray-300 hover:bg-gray-50'
-                                                }`}
+                                                className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${isSelected
+                                                    ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                                                    : 'hover:border-gray-300 hover:bg-gray-50'
+                                                    }`}
                                             >
                                                 <div
-                                                    className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                                                        isSelected
-                                                            ? 'bg-primary text-primary-foreground border-primary'
-                                                            : 'bg-muted text-muted-foreground'
-                                                    }`}
+                                                    className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${isSelected
+                                                        ? 'bg-primary text-primary-foreground border-primary'
+                                                        : 'bg-muted text-muted-foreground'
+                                                        }`}
                                                 >
                                                     {optionLetter}
                                                 </div>
@@ -259,15 +274,13 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                                     <button
                                         key={q.id}
                                         onClick={() => setCurrentIndex(idx)}
-                                        className={`h-10 rounded-lg text-xs font-bold border transition-all flex items-center justify-center relative ${
-                                            isCurrent
-                                                ? 'ring-2 ring-primary ring-offset-1 border-primary'
-                                                : ''
-                                        } ${
-                                            isAnswered
+                                        className={`h-10 rounded-lg text-xs font-bold border transition-all flex items-center justify-center relative ${isCurrent
+                                            ? 'ring-2 ring-primary ring-offset-1 border-primary'
+                                            : ''
+                                            } ${isAnswered
                                                 ? 'bg-green-600 text-white border-green-600'
                                                 : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {idx + 1}
                                     </button>
@@ -293,4 +306,3 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
 }
 
 Session.layout = (page: React.ReactNode) => page;
-

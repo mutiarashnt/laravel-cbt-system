@@ -1,6 +1,6 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Subject } from '@/types/cbt';
 
 interface Props {

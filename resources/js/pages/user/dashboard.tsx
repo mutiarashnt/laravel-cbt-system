@@ -1,6 +1,6 @@
-import UserLayout from '@/layouts/user-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ClipboardList, CheckCircle, PlayCircle, BookOpen, Clock, Users, ArrowRight } from 'lucide-react';
+import { ClipboardList, CheckCircle, PlayCircle, BookOpen, Clock, ArrowRight } from 'lucide-react';
+import UserLayout from '@/layouts/user-layout';
 import type { Exam } from '@/types/cbt';
 
 interface Stats {

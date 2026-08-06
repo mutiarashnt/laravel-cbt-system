@@ -1,6 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, LayoutGrid, ClipboardList, PenTool, FolderKanban } from 'lucide-react';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {

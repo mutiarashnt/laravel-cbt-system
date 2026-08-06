@@ -1,7 +1,7 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Plus, Edit2, Trash2, BookOpen, FolderKanban, Search, Filter } from 'lucide-react';
+import { Plus, Edit2, Trash2, BookOpen, FolderKanban, Search } from 'lucide-react';
 import { useState } from 'react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Question, Subject } from '@/types/cbt';
 
 interface Props {
@@ -31,9 +31,13 @@ export default function Index({ questions, subjects }: Props) {
     const filteredQuestions = questions.filter((item) => {
         // Subject filter
         if (selectedSubjectId === 'unassigned') {
-            if (item.subject_id) return false;
+            if (item.subject_id) {
+return false;
+}
         } else if (selectedSubjectId !== 'all') {
-            if (item.subject_id !== selectedSubjectId) return false;
+            if (item.subject_id !== selectedSubjectId) {
+return false;
+}
         }
 
         // Search query filter
@@ -42,6 +46,7 @@ export default function Index({ questions, subjects }: Props) {
             const matchQuestion = item.question.toLowerCase().includes(query);
             const matchChoice = item.choices?.some((c) => c.choice_text.toLowerCase().includes(query));
             const matchSubject = item.subject?.name.toLowerCase().includes(query);
+
             return matchQuestion || matchChoice || matchSubject;
         }
 

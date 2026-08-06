@@ -1,8 +1,9 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { ArrowLeft, Save, CheckSquare, FolderKanban, Filter } from 'lucide-react';
+import type { FormEvent} from 'react';
+import { useState } from 'react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Exam, Question } from '@/types/cbt';
-import { FormEvent, useState } from 'react';
 
 interface Props {
     exam: Exam;
@@ -36,8 +37,14 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
     });
 
     const filteredQuestions = questions.filter((q) => {
-        if (selectedSubjectFilter === 'all') return true;
-        if (selectedSubjectFilter === 'unassigned') return !q.subject_id;
+        if (selectedSubjectFilter === 'all') {
+return true;
+}
+
+        if (selectedSubjectFilter === 'unassigned') {
+return !q.subject_id;
+}
+
         return q.subject_id === Number(selectedSubjectFilter);
     });
 
@@ -197,6 +204,7 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                             <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
                                 {filteredQuestions.map((question, index) => {
                                     const isSelected = data.question_ids.includes(question.id);
+
                                     return (
                                         <div
                                             key={question.id}

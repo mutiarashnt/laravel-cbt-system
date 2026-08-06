@@ -1,6 +1,6 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Clock, Edit, BookOpen, Users } from 'lucide-react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Exam, Participant } from '@/types/cbt';
 
 interface ExtendedParticipant extends Participant {

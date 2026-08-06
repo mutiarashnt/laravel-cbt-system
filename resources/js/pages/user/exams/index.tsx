@@ -1,6 +1,6 @@
-import UserLayout from '@/layouts/user-layout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Clock, HelpCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import UserLayout from '@/layouts/user-layout';
 import type { Exam } from '@/types';
 
 interface Props {

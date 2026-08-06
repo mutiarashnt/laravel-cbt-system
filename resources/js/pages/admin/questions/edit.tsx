@@ -1,8 +1,8 @@
-import AdminLayout from '@/layouts/admin-layout';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
+import type { FormEvent } from 'react';
+import AdminLayout from '@/layouts/admin-layout';
 import type { Question, Subject } from '@/types/cbt';
-import { FormEvent } from 'react';
 
 interface Props {
     question: Question;

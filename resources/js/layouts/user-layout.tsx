@@ -1,5 +1,5 @@
-import type { BreadcrumbItem } from '@/types';
 import type { ReactNode } from 'react';
+import type { BreadcrumbItem } from '@/types';
 
 interface UserLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
