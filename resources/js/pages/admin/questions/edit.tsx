@@ -69,7 +69,7 @@ export default function Edit({ question, subjects }: Props) {
                             <select
                                 className="w-full rounded-md border bg-card px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 value={data.subject_id}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     setData('subject_id', e.target.value)
                                 }
                             >
@@ -98,7 +98,7 @@ export default function Edit({ question, subjects }: Props) {
                                 className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 rows={4}
                                 value={data.question}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     setData('question', e.target.value)
                                 }
                                 required
@@ -155,7 +155,7 @@ export default function Edit({ question, subjects }: Props) {
                             <select
                                 className="w-full rounded-md border bg-card px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden sm:w-64"
                                 value={data.correct_answer}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     setData(
                                         'correct_answer',
                                         Number(e.target.value),

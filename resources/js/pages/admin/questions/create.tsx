@@ -61,7 +61,7 @@ export default function Create({ subjects }: Props) {
                             <select
                                 className="w-full rounded-md border bg-card px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 value={form.data.subject_id}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     form.setData('subject_id', e.target.value)
                                 }
                             >
@@ -91,7 +91,7 @@ export default function Create({ subjects }: Props) {
                                 rows={4}
                                 placeholder="Masukkan isi pertanyaan di sini..."
                                 value={form.data.question}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     form.setData('question', e.target.value)
                                 }
                                 required
@@ -139,7 +139,7 @@ export default function Create({ subjects }: Props) {
                             <select
                                 className="w-full rounded-md border bg-card px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden sm:w-64"
                                 value={form.data.correct_answer}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     form.setData(
                                         'correct_answer',
                                         Number(e.target.value),

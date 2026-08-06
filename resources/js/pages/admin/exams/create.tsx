@@ -140,7 +140,7 @@ export default function Create({ questions }: Props) {
                             </label>
                             <textarea
                                 value={data.description}
-                                onChange={(e) =>
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                     setData('description', e.target.value)
                                 }
                                 rows={3}
@@ -180,7 +180,7 @@ export default function Create({ questions }: Props) {
                                 </label>
                                 <select
                                     value={data.status}
-                                    onChange={(e) =>
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                         setData(
                                             'status',
                                             e.target.value as
@@ -224,7 +224,7 @@ export default function Create({ questions }: Props) {
                                     <Filter className="h-4 w-4 text-muted-foreground" />
                                     <select
                                         value={selectedSubjectFilter}
-                                        onChange={(e) =>
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
                                             setSelectedSubjectFilter(
                                                 e.target.value,
                                             )
