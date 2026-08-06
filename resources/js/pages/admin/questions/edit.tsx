@@ -137,12 +137,10 @@ export default function Edit({ question, subjects }: Props) {
                                         type="text"
                                         className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                         value={choice}
-                                        onChange={(e) => {
-                                            const newChoices = [
-                                                ...data.choices,
-                                            ];
-                                            newChoices[index] = e.target.value;
-                                            setData('choices', newChoices);
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            const choices = [...data.choices];
+                                            choices[index] = e.target.value;
+                                            setData('choices', choices);
                                         }}
                                         required
                                     />

@@ -123,9 +123,7 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                             <input
                                 type="text"
                                 value={data.title}
-                                onChange={(e) =>
-                                    setData('title', e.target.value)
-                                }
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('title', e.target.value)}
                                 className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 required
                             />
@@ -164,12 +162,7 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                                     type="number"
                                     min={1}
                                     value={data.duration}
-                                    onChange={(e) =>
-                                        setData(
-                                            'duration',
-                                            parseInt(e.target.value) || 1,
-                                        )
-                                    }
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('duration', parseInt(e.target.value) || 1)}
                                     className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     required
                                 />

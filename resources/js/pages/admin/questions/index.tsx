@@ -153,7 +153,7 @@ export default function Index({ questions, subjects }: Props) {
                                 type="text"
                                 placeholder="Cari isi soal, pilihan jawaban..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                                 className="w-full rounded-lg border bg-card py-1.5 pr-4 pl-9 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                             />
                         </div>

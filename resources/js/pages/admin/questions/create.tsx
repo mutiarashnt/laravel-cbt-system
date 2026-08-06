@@ -121,10 +121,8 @@ export default function Create({ subjects }: Props) {
                                         className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                         placeholder={`Teks pilihan ${index + 1}`}
                                         value={choice}
-                                        onChange={(e) => {
-                                            const choices = [
-                                                ...form.data.choices,
-                                            ];
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            const choices = [...form.data.choices];
                                             choices[index] = e.target.value;
                                             form.setData('choices', choices);
                                         }}
