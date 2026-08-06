@@ -1,9 +1,15 @@
-import { Head, useForm, Link } from '@inertiajs/react';
-import { ArrowLeft, Save, CheckSquare, FolderKanban, Filter } from 'lucide-react';
-import type { FormEvent} from 'react';
 import { useState } from 'react';
+import { Head, useForm, Link } from '@inertiajs/react';
+import {
+    ArrowLeft,
+    Save,
+    CheckSquare,
+    FolderKanban,
+    Filter,
+} from 'lucide-react';
 import AdminLayout from '@/layouts/admin-layout';
 import type { Exam, Question } from '@/types/cbt';
+import type { FormEvent } from 'react';
 
 interface Props {
     exam: Exam;
@@ -18,7 +24,8 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
         { title: `Edit: ${exam.title}`, href: `/admin/exams/${exam.id}/edit` },
     ];
 
-    const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<string>('all');
+    const [selectedSubjectFilter, setSelectedSubjectFilter] =
+        useState<string>('all');
 
     const { data, setData, put, processing, errors } = useForm({
         title: exam.title,
@@ -38,12 +45,12 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
 
     const filteredQuestions = questions.filter((q) => {
         if (selectedSubjectFilter === 'all') {
-return true;
-}
+            return true;
+        }
 
         if (selectedSubjectFilter === 'unassigned') {
-return !q.subject_id;
-}
+            return !q.subject_id;
+        }
 
         return q.subject_id === Number(selectedSubjectFilter);
     });
@@ -52,7 +59,7 @@ return !q.subject_id;
         if (data.question_ids.includes(id)) {
             setData(
                 'question_ids',
-                data.question_ids.filter((qId) => qId !== id)
+                data.question_ids.filter((qId) => qId !== id),
             );
         } else {
             setData('question_ids', [...data.question_ids, id]);
@@ -61,15 +68,19 @@ return !q.subject_id;
 
     const handleSelectAllFiltered = () => {
         const filteredIds = filteredQuestions.map((q) => q.id);
-        const allFilteredSelected = filteredIds.every((id) => data.question_ids.includes(id));
+        const allFilteredSelected = filteredIds.every((id) =>
+            data.question_ids.includes(id),
+        );
 
         if (allFilteredSelected) {
             setData(
                 'question_ids',
-                data.question_ids.filter((id) => !filteredIds.includes(id))
+                data.question_ids.filter((id) => !filteredIds.includes(id)),
             );
         } else {
-            const newSelected = Array.from(new Set([...data.question_ids, ...filteredIds]));
+            const newSelected = Array.from(
+                new Set([...data.question_ids, ...filteredIds]),
+            );
             setData('question_ids', newSelected);
         }
     };
@@ -86,15 +97,17 @@ return !q.subject_id;
             <div className="max-w-4xl space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Edit Ujian</h1>
-                        <p className="text-muted-foreground text-sm">
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            Edit Ujian
+                        </h1>
+                        <p className="text-sm text-muted-foreground">
                             Perbarui detail ujian dan susunan soal.
                         </p>
                     </div>
 
                     <Link
                         href="/admin/exams"
-                        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground font-medium"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Kembali
@@ -102,65 +115,112 @@ return !q.subject_id;
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
+                    <div className="space-y-4 rounded-xl border bg-card p-6 shadow-xs">
                         <div>
-                            <label className="block text-sm font-medium text-foreground mb-1">Judul Ujian *</label>
+                            <label className="mb-1 block text-sm font-medium text-foreground">
+                                Judul Ujian *
+                            </label>
                             <input
                                 type="text"
                                 value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
-                                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
+                                className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 required
                             />
-                            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
+                            {errors.title && (
+                                <p className="mt-1 text-xs text-red-500">
+                                    {errors.title}
+                                </p>
+                            )}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-foreground mb-1">Deskripsi / Petunjuk</label>
+                            <label className="mb-1 block text-sm font-medium text-foreground">
+                                Deskripsi / Petunjuk
+                            </label>
                             <textarea
                                 value={data.description}
-                                onChange={(e) => setData('description', e.target.value)}
+                                onChange={(e) =>
+                                    setData('description', e.target.value)
+                                }
                                 rows={3}
-                                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                             />
-                            {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
+                            {errors.description && (
+                                <p className="mt-1 text-xs text-red-500">
+                                    {errors.description}
+                                </p>
+                            )}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <label className="block text-sm font-medium text-foreground mb-1">Durasi (Menit) *</label>
+                                <label className="mb-1 block text-sm font-medium text-foreground">
+                                    Durasi (Menit) *
+                                </label>
                                 <input
                                     type="number"
                                     min={1}
                                     value={data.duration}
-                                    onChange={(e) => setData('duration', parseInt(e.target.value) || 1)}
-                                    className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                    onChange={(e) =>
+                                        setData(
+                                            'duration',
+                                            parseInt(e.target.value) || 1,
+                                        )
+                                    }
+                                    className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     required
                                 />
-                                {errors.duration && <p className="text-xs text-red-500 mt-1">{errors.duration}</p>}
+                                {errors.duration && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.duration}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-foreground mb-1">Status Ujian *</label>
+                                <label className="mb-1 block text-sm font-medium text-foreground">
+                                    Status Ujian *
+                                </label>
                                 <select
                                     value={data.status}
-                                    onChange={(e) => setData('status', e.target.value as 'draft' | 'published')}
-                                    className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary bg-card"
+                                    onChange={(e) =>
+                                        setData(
+                                            'status',
+                                            e.target.value as
+                                                'draft' | 'published',
+                                        )
+                                    }
+                                    className="w-full rounded-md border bg-card px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 >
-                                    <option value="draft">Draft (Belum dapat diakses user)</option>
-                                    <option value="published">Published (Dapat diakses user)</option>
+                                    <option value="draft">
+                                        Draft (Belum dapat diakses user)
+                                    </option>
+                                    <option value="published">
+                                        Published (Dapat diakses user)
+                                    </option>
                                 </select>
-                                {errors.status && <p className="text-xs text-red-500 mt-1">{errors.status}</p>}
+                                {errors.status && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.status}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
 
-                    <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
+                    <div className="space-y-4 rounded-xl border bg-card p-6 shadow-xs">
+                        <div className="flex flex-col justify-between gap-3 border-b pb-3 sm:flex-row sm:items-center">
                             <div>
-                                <h2 className="text-lg font-bold">Pilih Soal ({data.question_ids.length} dipilih)</h2>
+                                <h2 className="text-lg font-bold">
+                                    Pilih Soal ({data.question_ids.length}{' '}
+                                    dipilih)
+                                </h2>
                                 <p className="text-xs text-muted-foreground">
-                                    Pilih soal dari bank soal untuk dimasukkan ke ujian ini.
+                                    Pilih soal dari bank soal untuk dimasukkan
+                                    ke ujian ini.
                                 </p>
                             </div>
 
@@ -170,16 +230,29 @@ return !q.subject_id;
                                     <Filter className="h-4 w-4 text-muted-foreground" />
                                     <select
                                         value={selectedSubjectFilter}
-                                        onChange={(e) => setSelectedSubjectFilter(e.target.value)}
-                                        className="rounded-md border text-xs px-2.5 py-1.5 bg-card focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                        onChange={(e) =>
+                                            setSelectedSubjectFilter(
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="rounded-md border bg-card px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     >
-                                        <option value="all">Semua Mata Pelajaran</option>
-                                        {Array.from(subjectsMap.entries()).map(([id, name]) => (
-                                            <option key={id} value={id.toString()}>
-                                                {name}
-                                            </option>
-                                        ))}
-                                        <option value="unassigned">Belum Ada Mata Pelajaran</option>
+                                        <option value="all">
+                                            Semua Mata Pelajaran
+                                        </option>
+                                        {Array.from(subjectsMap.entries()).map(
+                                            ([id, name]) => (
+                                                <option
+                                                    key={id}
+                                                    value={id.toString()}
+                                                >
+                                                    {name}
+                                                </option>
+                                            ),
+                                        )}
+                                        <option value="unassigned">
+                                            Belum Ada Mata Pelajaran
+                                        </option>
                                     </select>
                                 </div>
 
@@ -187,7 +260,7 @@ return !q.subject_id;
                                     <button
                                         type="button"
                                         onClick={handleSelectAllFiltered}
-                                        className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:underline"
+                                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:underline"
                                     >
                                         <CheckSquare className="h-4 w-4" />
                                         Pilih Semua Tampil
@@ -197,20 +270,27 @@ return !q.subject_id;
                         </div>
 
                         {filteredQuestions.length === 0 ? (
-                            <p className="text-sm text-muted-foreground py-6 text-center">
+                            <p className="py-6 text-center text-sm text-muted-foreground">
                                 Tidak ada soal pada filter mata pelajaran ini.
                             </p>
                         ) : (
-                            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                            <div className="max-h-96 space-y-3 overflow-y-auto pr-2">
                                 {filteredQuestions.map((question, index) => {
-                                    const isSelected = data.question_ids.includes(question.id);
+                                    const isSelected =
+                                        data.question_ids.includes(question.id);
 
                                     return (
                                         <div
                                             key={question.id}
-                                            onClick={() => handleQuestionToggle(question.id)}
-                                            className={`p-4 rounded-lg border cursor-pointer transition-colors flex items-start gap-3 ${
-                                                isSelected ? 'border-primary bg-primary/5' : 'hover:border-gray-300'
+                                            onClick={() =>
+                                                handleQuestionToggle(
+                                                    question.id,
+                                                )
+                                            }
+                                            className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${
+                                                isSelected
+                                                    ? 'border-primary bg-primary/5'
+                                                    : 'hover:border-gray-300'
                                             }`}
                                         >
                                             <input
@@ -219,39 +299,52 @@ return !q.subject_id;
                                                 onChange={() => {}}
                                                 className="mt-1 rounded text-primary focus:ring-primary"
                                             />
-                                            <div className="space-y-1 w-full">
+                                            <div className="w-full space-y-1">
                                                 <div className="flex items-center justify-between gap-2">
                                                     <span className="text-xs font-semibold text-muted-foreground">
                                                         Soal #{index + 1}
                                                     </span>
                                                     {question.subject ? (
-                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary/10 text-primary text-xs font-medium">
+                                                        <span className="inline-flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                                                             <FolderKanban className="h-3 w-3" />
-                                                            {question.subject.name}
+                                                            {
+                                                                question.subject
+                                                                    .name
+                                                            }
                                                         </span>
                                                     ) : (
-                                                        <span className="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 font-medium">
+                                                        <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">
                                                             Belum Diset
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="text-sm font-medium">{question.question}</p>
-                                                {question.choices && question.choices.length > 0 && (
-                                                    <div className="flex flex-wrap gap-2 pt-1">
-                                                        {question.choices.map((c) => (
-                                                            <span
-                                                                key={c.id}
-                                                                className={`text-xs px-2 py-0.5 rounded border ${
-                                                                    c.is_correct
-                                                                        ? 'bg-green-100 text-green-800 border-green-300 font-medium'
-                                                                        : 'bg-muted text-muted-foreground'
-                                                                }`}
-                                                            >
-                                                                {c.choice_text}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                                <p className="text-sm font-medium">
+                                                    {question.question}
+                                                </p>
+                                                {question.choices &&
+                                                    question.choices.length >
+                                                        0 && (
+                                                        <div className="flex flex-wrap gap-2 pt-1">
+                                                            {question.choices.map(
+                                                                (c) => (
+                                                                    <span
+                                                                        key={
+                                                                            c.id
+                                                                        }
+                                                                        className={`rounded border px-2 py-0.5 text-xs ${
+                                                                            c.is_correct
+                                                                                ? 'border-green-300 bg-green-100 font-medium text-green-800'
+                                                                                : 'bg-muted text-muted-foreground'
+                                                                        }`}
+                                                                    >
+                                                                        {
+                                                                            c.choice_text
+                                                                        }
+                                                                    </span>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    )}
                                             </div>
                                         </div>
                                     );

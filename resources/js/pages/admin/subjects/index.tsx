@@ -1,9 +1,17 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import { Plus, Edit2, Trash2, BookOpen, FolderKanban, X, Check } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
+import { Head, useForm, router } from '@inertiajs/react';
+import {
+    Plus,
+    Edit2,
+    Trash2,
+    BookOpen,
+    FolderKanban,
+    X,
+    Check,
+} from 'lucide-react';
 import AdminLayout from '@/layouts/admin-layout';
 import type { Subject } from '@/types/cbt';
+import type { FormEvent } from 'react';
 
 interface Props {
     subjects: Subject[];
@@ -61,7 +69,11 @@ export default function Index({ subjects }: Props) {
     };
 
     const handleDelete = (id: number) => {
-        if (confirm('Yakin ingin menghapus mata pelajaran ini? Soal terkait akan dialihkan ke "Tanpa Mata Pelajaran".')) {
+        if (
+            confirm(
+                'Yakin ingin menghapus mata pelajaran ini? Soal terkait akan dialihkan ke "Tanpa Mata Pelajaran".',
+            )
+        ) {
             router.delete(`/admin/subjects/${id}`);
         }
     };
@@ -71,50 +83,56 @@ export default function Index({ subjects }: Props) {
             <Head title="Kelola Mata Pelajaran" />
 
             <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Mata Pelajaran</h1>
-                        <p className="text-muted-foreground text-sm">
-                            Kelola daftar mata pelajaran (subject) untuk mengelompokkan soal di bank soal.
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            Mata Pelajaran
+                        </h1>
+                        <p className="text-sm text-muted-foreground">
+                            Kelola daftar mata pelajaran (subject) untuk
+                            mengelompokkan soal di bank soal.
                         </p>
                     </div>
 
                     <button
                         onClick={openAddModal}
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs hover:opacity-90 transition-opacity"
+                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-opacity hover:opacity-90"
                     >
                         <Plus className="h-4 w-4" />
                         Tambah Mata Pelajaran
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {subjects.length === 0 ? (
                         <div className="col-span-full rounded-xl border bg-card p-12 text-center text-muted-foreground">
-                            <FolderKanban className="mx-auto h-12 w-12 text-muted-foreground/50 mb-3" />
-                            <p className="text-base font-medium">Belum ada mata pelajaran</p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Klik tombol di atas untuk menambahkan mata pelajaran baru.
+                            <FolderKanban className="mx-auto mb-3 h-12 w-12 text-muted-foreground/50" />
+                            <p className="text-base font-medium">
+                                Belum ada mata pelajaran
+                            </p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                                Klik tombol di atas untuk menambahkan mata
+                                pelajaran baru.
                             </p>
                         </div>
                     ) : (
                         subjects.map((subject) => (
                             <div
                                 key={subject.id}
-                                className="rounded-xl border bg-card p-5 shadow-xs flex flex-col justify-between hover:border-primary/50 transition-colors"
+                                className="flex flex-col justify-between rounded-xl border bg-card p-5 shadow-xs transition-colors hover:border-primary/50"
                             >
                                 <div className="space-y-2">
                                     <div className="flex items-start justify-between gap-2">
                                         <div className="flex items-center gap-2">
-                                            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                            <div className="rounded-lg bg-primary/10 p-2 text-primary">
                                                 <FolderKanban className="h-5 w-5" />
                                             </div>
                                             <div>
-                                                <h3 className="font-semibold text-foreground text-base">
+                                                <h3 className="text-base font-semibold text-foreground">
                                                     {subject.name}
                                                 </h3>
                                                 {subject.code && (
-                                                    <span className="text-xs px-2 py-0.5 rounded bg-muted font-mono font-medium text-muted-foreground">
+                                                    <span className="rounded bg-muted px-2 py-0.5 font-mono text-xs font-medium text-muted-foreground">
                                                         {subject.code}
                                                     </span>
                                                 )}
@@ -123,29 +141,35 @@ export default function Index({ subjects }: Props) {
                                     </div>
 
                                     {subject.description && (
-                                        <p className="text-xs text-muted-foreground line-clamp-2">
+                                        <p className="line-clamp-2 text-xs text-muted-foreground">
                                             {subject.description}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="pt-4 mt-4 border-t flex items-center justify-between">
+                                <div className="mt-4 flex items-center justify-between border-t pt-4">
                                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                         <BookOpen className="h-3.5 w-3.5" />
-                                        <span>{subject.questions_count ?? 0} Soal</span>
+                                        <span>
+                                            {subject.questions_count ?? 0} Soal
+                                        </span>
                                     </div>
 
                                     <div className="flex items-center gap-1">
                                         <button
-                                            onClick={() => openEditModal(subject)}
-                                            className="p-1.5 rounded-md hover:bg-muted text-blue-600 transition-colors"
+                                            onClick={() =>
+                                                openEditModal(subject)
+                                            }
+                                            className="rounded-md p-1.5 text-blue-600 transition-colors hover:bg-muted"
                                             title="Edit"
                                         >
                                             <Edit2 className="h-4 w-4" />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(subject.id)}
-                                            className="p-1.5 rounded-md hover:bg-muted text-red-600 transition-colors"
+                                            onClick={() =>
+                                                handleDelete(subject.id)
+                                            }
+                                            className="rounded-md p-1.5 text-red-600 transition-colors hover:bg-muted"
                                             title="Hapus"
                                         >
                                             <Trash2 className="h-4 w-4" />
@@ -160,71 +184,85 @@ export default function Index({ subjects }: Props) {
 
             {/* Modal Tambah / Edit Mata Pelajaran */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-card w-full max-w-md rounded-xl border shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="flex items-center justify-between p-4 border-b">
-                            <h2 className="font-semibold text-lg">
-                                {editingSubject ? 'Edit Mata Pelajaran' : 'Tambah Mata Pelajaran'}
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+                    <div className="w-full max-w-md animate-in overflow-hidden rounded-xl border bg-card shadow-lg duration-200 zoom-in-95 fade-in">
+                        <div className="flex items-center justify-between border-b p-4">
+                            <h2 className="text-lg font-semibold">
+                                {editingSubject
+                                    ? 'Edit Mata Pelajaran'
+                                    : 'Tambah Mata Pelajaran'}
                             </h2>
                             <button
                                 onClick={closeModal}
-                                className="p-1 rounded-md hover:bg-muted text-muted-foreground"
+                                className="rounded-md p-1 text-muted-foreground hover:bg-muted"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-4 p-4">
                             <div>
-                                <label className="block text-sm font-medium mb-1">
+                                <label className="mb-1 block text-sm font-medium">
                                     Nama Mata Pelajaran *
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Contoh: Matematika, Fisika"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
+                                    className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     required
                                 />
                                 {errors.name && (
-                                    <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium mb-1">
+                                <label className="mb-1 block text-sm font-medium">
                                     Kode Mata Pelajaran (Opsional)
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Contoh: MTK-01"
                                     value={data.code}
-                                    onChange={(e) => setData('code', e.target.value)}
-                                    className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                    onChange={(e) =>
+                                        setData('code', e.target.value)
+                                    }
+                                    className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 />
                                 {errors.code && (
-                                    <p className="text-xs text-red-500 mt-1">{errors.code}</p>
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.code}
+                                    </p>
                                 )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium mb-1">
+                                <label className="mb-1 block text-sm font-medium">
                                     Deskripsi (Opsional)
                                 </label>
                                 <textarea
                                     rows={3}
                                     placeholder="Keterangan mengenai mata pelajaran..."
                                     value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
-                                    className="w-full rounded-md border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                    onChange={(e) =>
+                                        setData('description', e.target.value)
+                                    }
+                                    className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 />
                                 {errors.description && (
-                                    <p className="text-xs text-red-500 mt-1">{errors.description}</p>
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.description}
+                                    </p>
                                 )}
                             </div>
 
-                            <div className="flex justify-end gap-2 pt-2 border-t">
+                            <div className="flex justify-end gap-2 border-t pt-2">
                                 <button
                                     type="button"
                                     onClick={closeModal}

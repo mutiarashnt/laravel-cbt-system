@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import type { BreadcrumbItem } from '@/types';
+import type { ReactNode } from 'react';
 
 interface UserLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -7,9 +7,5 @@ interface UserLayoutProps {
 }
 
 export default function UserLayout({ children }: UserLayoutProps) {
-    return (
-        <div className="flex flex-1 flex-col gap-4 p-4">
-            {children}
-        </div>
-    );
+    return <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>;
 }

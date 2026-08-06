@@ -1,5 +1,13 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Plus, Trash2, Edit, Eye, Clock, HelpCircle, Users } from 'lucide-react';
+import {
+    Plus,
+    Trash2,
+    Edit,
+    Eye,
+    Clock,
+    HelpCircle,
+    Users,
+} from 'lucide-react';
 import AdminLayout from '@/layouts/admin-layout';
 import type { Exam } from '@/types';
 
@@ -24,17 +32,19 @@ export default function Index({ exams }: Props) {
             <Head title="Kelola Ujian" />
 
             <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Kelola Ujian</h1>
-                        <p className="text-muted-foreground text-sm">
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            Kelola Ujian
+                        </h1>
+                        <p className="text-sm text-muted-foreground">
                             Daftar ujian online yang telah dibuat.
                         </p>
                     </div>
 
                     <Link
                         href="/admin/exams/create"
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs hover:opacity-90 transition-opacity"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-opacity hover:opacity-90"
                     >
                         <Plus className="h-4 w-4" />
                         Tambah Ujian Baru
@@ -43,10 +53,12 @@ export default function Index({ exams }: Props) {
 
                 {exams.length === 0 ? (
                     <div className="rounded-xl border bg-card p-12 text-center shadow-xs">
-                        <p className="text-muted-foreground text-sm">Belum ada ujian. Silakan buat ujian pertama Anda.</p>
+                        <p className="text-sm text-muted-foreground">
+                            Belum ada ujian. Silakan buat ujian pertama Anda.
+                        </p>
                         <Link
                             href="/admin/exams/create"
-                            className="mt-4 inline-flex items-center gap-2 text-sm text-blue-600 font-medium hover:underline"
+                            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:underline"
                         >
                             <Plus className="h-4 w-4" />
                             Buat Ujian
@@ -57,7 +69,7 @@ export default function Index({ exams }: Props) {
                         {exams.map((exam) => (
                             <div
                                 key={exam.id}
-                                className="rounded-xl border bg-card p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-primary/50 transition-colors"
+                                className="flex flex-col justify-between space-y-4 rounded-xl border bg-card p-5 shadow-xs transition-colors hover:border-primary/50"
                             >
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
@@ -68,35 +80,44 @@ export default function Index({ exams }: Props) {
                                                     : 'bg-yellow-100 text-yellow-800'
                                             }`}
                                         >
-                                            {exam.status === 'published' ? 'Dipublikasikan' : 'Draft'}
+                                            {exam.status === 'published'
+                                                ? 'Dipublikasikan'
+                                                : 'Draft'}
                                         </span>
                                     </div>
 
-                                    <h2 className="text-lg font-bold line-clamp-1">{exam.title}</h2>
-                                    <p className="text-xs text-muted-foreground line-clamp-2">
-                                        {exam.description || 'Tidak ada deskripsi.'}
+                                    <h2 className="line-clamp-1 text-lg font-bold">
+                                        {exam.title}
+                                    </h2>
+                                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                                        {exam.description ||
+                                            'Tidak ada deskripsi.'}
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-2 pt-2 border-t text-xs text-muted-foreground">
+                                <div className="grid grid-cols-3 gap-2 border-t pt-2 text-xs text-muted-foreground">
                                     <div className="flex items-center gap-1">
                                         <Clock className="h-3.5 w-3.5" />
                                         <span>{exam.duration}m</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <HelpCircle className="h-3.5 w-3.5" />
-                                        <span>{exam.questions_count ?? 0} Soal</span>
+                                        <span>
+                                            {exam.questions_count ?? 0} Soal
+                                        </span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <Users className="h-3.5 w-3.5" />
-                                        <span>{exam.participants_count ?? 0} User</span>
+                                        <span>
+                                            {exam.participants_count ?? 0} User
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between pt-2 border-t">
+                                <div className="flex items-center justify-between border-t pt-2">
                                     <Link
                                         href={`/admin/exams/${exam.id}`}
-                                        className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:underline"
+                                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:underline"
                                     >
                                         <Eye className="h-3.5 w-3.5" />
                                         Detail
@@ -105,15 +126,20 @@ export default function Index({ exams }: Props) {
                                     <div className="flex items-center gap-2">
                                         <Link
                                             href={`/admin/exams/${exam.id}/edit`}
-                                            className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                                            className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                                             title="Edit Ujian"
                                         >
                                             <Edit className="h-4 w-4" />
                                         </Link>
 
                                         <button
-                                            onClick={() => handleDelete(exam.id, exam.title)}
-                                            className="p-1.5 rounded-md hover:bg-red-50 text-red-500"
+                                            onClick={() =>
+                                                handleDelete(
+                                                    exam.id,
+                                                    exam.title,
+                                                )
+                                            }
+                                            className="rounded-md p-1.5 text-red-500 hover:bg-red-50"
                                             title="Hapus Ujian"
                                         >
                                             <Trash2 className="h-4 w-4" />

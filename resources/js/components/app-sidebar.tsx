@@ -1,5 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, LayoutGrid, ClipboardList, PenTool, FolderKanban } from 'lucide-react';
+import {
+    BookOpen,
+    LayoutGrid,
+    ClipboardList,
+    PenTool,
+    FolderKanban,
+} from 'lucide-react';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -64,7 +70,9 @@ export function AppSidebar() {
                         <SidebarMenuButton size="lg" asChild>
                             <Link href={dashboardUrl} prefetch>
                                 <div className="flex flex-col">
-                                    <span className="font-bold text-lg">{appTitle}</span>
+                                    <span className="text-lg font-bold">
+                                        {appTitle}
+                                    </span>
                                     <span className="text-xs text-gray-500">
                                         Sistem Ujian Online
                                     </span>

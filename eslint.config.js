@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import prettier from 'eslint-config-prettier/flat';
 import importPlugin from 'eslint-plugin-import';
+import unusedImports from 'eslint-plugin-unused-imports';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -51,6 +52,7 @@ export default [
     {
         plugins: {
             import: importPlugin,
+            'unused-imports': unusedImports,
         },
         settings: {
             'import/resolver': {
@@ -70,6 +72,11 @@ export default [
                     fixStyle: 'separate-type-imports',
                 },
             ],
+            'unused-imports/no-unused-imports': 'error',
+            'unused-imports/no-unused-vars': [
+                'warn',
+                { 'vars': 'all', 'varsIgnorePattern': '^_', 'args': 'after-used', 'argsIgnorePattern': '^_' }
+            ],
             'import/order': [
                 'error',
                 {
@@ -80,7 +87,31 @@ export default [
                         'parent',
                         'sibling',
                         'index',
+                        'type',
                     ],
+                    pathGroups: [
+                        {
+                            pattern: 'react',
+                            group: 'external',
+                            position: 'before',
+                        },
+                        {
+                            pattern: '@inertiajs/**',
+                            group: 'external',
+                            position: 'after',
+                        },
+                        {
+                            pattern: 'lucide-react',
+                            group: 'external',
+                            position: 'after',
+                        },
+                        {
+                            pattern: '@/**',
+                            group: 'internal',
+                            position: 'before',
+                        },
+                    ],
+                    pathGroupsExcludedImportTypes: ['react', 'type'],
                     alphabetize: { order: 'asc', caseInsensitive: true },
                 },
             ],

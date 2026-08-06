@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
 import { Fragment } from 'react';
+import { Link } from '@inertiajs/react';
 import {
     Breadcrumb,
     BreadcrumbItem,
