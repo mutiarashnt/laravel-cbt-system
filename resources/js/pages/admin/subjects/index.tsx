@@ -209,7 +209,9 @@ export default function Index({ subjects }: Props) {
                                     type="text"
                                     placeholder="Contoh: Matematika, Fisika"
                                     value={data.name}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('name', e.target.value)}
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>,
+                                    ) => setData('name', e.target.value)}
                                     className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     required
                                 />
@@ -228,7 +230,9 @@ export default function Index({ subjects }: Props) {
                                     type="text"
                                     placeholder="Contoh: MTK-01"
                                     value={data.code}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('code', e.target.value)}
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>,
+                                    ) => setData('code', e.target.value)}
                                     className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 />
                                 {errors.code && (
@@ -246,7 +250,9 @@ export default function Index({ subjects }: Props) {
                                     rows={3}
                                     placeholder="Keterangan mengenai mata pelajaran..."
                                     value={data.description}
-                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setData('description', e.target.value)}
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLTextAreaElement>,
+                                    ) => setData('description', e.target.value)}
                                     className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 />
                                 {errors.description && (

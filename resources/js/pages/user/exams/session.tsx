@@ -267,9 +267,13 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                                     <textarea
                                         rows={6}
                                         value={currentAnswer.answer_text || ''}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-                                            handleEssayChange(e.target.value)
-                                        }
+                                        onChange={(
+                                            e: React.ChangeEvent<
+                                                | HTMLInputElement
+                                                | HTMLSelectElement
+                                                | HTMLTextAreaElement
+                                            >,
+                                        ) => handleEssayChange(e.target.value)}
                                         className="w-full rounded-lg border p-3 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                         placeholder="Jawaban essay..."
                                     />

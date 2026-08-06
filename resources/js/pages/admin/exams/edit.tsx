@@ -123,7 +123,9 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                             <input
                                 type="text"
                                 value={data.title}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('title', e.target.value)}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>,
+                                ) => setData('title', e.target.value)}
                                 className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                 required
                             />
@@ -140,9 +142,13 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                             </label>
                             <textarea
                                 value={data.description}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-                                    setData('description', e.target.value)
-                                }
+                                onChange={(
+                                    e: React.ChangeEvent<
+                                        | HTMLInputElement
+                                        | HTMLSelectElement
+                                        | HTMLTextAreaElement
+                                    >,
+                                ) => setData('description', e.target.value)}
                                 rows={3}
                                 className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                             />
@@ -162,7 +168,14 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                                     type="number"
                                     min={1}
                                     value={data.duration}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData('duration', parseInt(e.target.value) || 1)}
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLInputElement>,
+                                    ) =>
+                                        setData(
+                                            'duration',
+                                            parseInt(e.target.value) || 1,
+                                        )
+                                    }
                                     className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-hidden"
                                     required
                                 />
@@ -179,7 +192,13 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                                 </label>
                                 <select
                                     value={data.status}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+                                    onChange={(
+                                        e: React.ChangeEvent<
+                                            | HTMLInputElement
+                                            | HTMLSelectElement
+                                            | HTMLTextAreaElement
+                                        >,
+                                    ) =>
                                         setData(
                                             'status',
                                             e.target.value as
@@ -223,7 +242,13 @@ export default function Edit({ exam, questions, selectedQuestionIds }: Props) {
                                     <Filter className="h-4 w-4 text-muted-foreground" />
                                     <select
                                         value={selectedSubjectFilter}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+                                        onChange={(
+                                            e: React.ChangeEvent<
+                                                | HTMLInputElement
+                                                | HTMLSelectElement
+                                                | HTMLTextAreaElement
+                                            >,
+                                        ) =>
                                             setSelectedSubjectFilter(
                                                 e.target.value,
                                             )
