@@ -1,160 +1,161 @@
-    import js from '@eslint/js';
-    import stylistic from '@stylistic/eslint-plugin';
-    import prettier from 'eslint-config-prettier/flat';
-    import importPlugin from 'eslint-plugin-import';
-    import unusedImports from 'eslint-plugin-unused-imports';
-    import react from 'eslint-plugin-react';
-    import reactHooks from 'eslint-plugin-react-hooks';
-    import globals from 'globals';
-    import typescript from 'typescript-eslint';
+import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
+import prettier from 'eslint-config-prettier/flat';
+import importPlugin from 'eslint-plugin-import';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
+import typescript from 'typescript-eslint';
 
-    const controlStatements = [
-        'if',
-        'return',
-        'for',
-        'while',
-        'do',
-        'switch',
-        'try',
-        'throw',
-    ];
-    const paddingAroundControl = [
-        ...controlStatements.flatMap((stmt) => [
-            { blankLine: 'always', prev: '*', next: stmt },
-            { blankLine: 'always', prev: stmt, next: '*' },
-        ]),
-    ];
+const controlStatements = [
+    'if',
+    'return',
+    'for',
+    'while',
+    'do',
+    'switch',
+    'try',
+    'throw',
+];
+const paddingAroundControl = [
+    ...controlStatements.flatMap((stmt) => [
+        { blankLine: 'always', prev: '*', next: stmt },
+        { blankLine: 'always', prev: stmt, next: '*' },
+    ]),
+];
 
-    /** @type {import('eslint').Linter.Config[]} */
-    export default [
-        js.configs.recommended,
-        reactHooks.configs.flat['recommended-latest'],
-        ...typescript.configs.recommended,
-        {
-            ...react.configs.flat.recommended,
-            ...react.configs.flat['jsx-runtime'],
-            languageOptions: {
-                globals: {
-                    ...globals.browser,
-                },
-            },
-            rules: {
-                'react/react-in-jsx-scope': 'off',
-                'react/prop-types': 'off',
-                'react/no-unescaped-entities': 'off',
-            },
-            settings: {
-                react: {
-                    version: 'detect',
-                },
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+    js.configs.recommended,
+    reactHooks.configs.flat['recommended-latest'],
+    ...typescript.configs.recommended,
+    {
+        ...react.configs.flat.recommended,
+        ...react.configs.flat['jsx-runtime'],
+        languageOptions: {
+            globals: {
+                ...globals.browser,
             },
         },
-        {
-            plugins: {
-                import: importPlugin,
-                'unused-imports': unusedImports,
+        rules: {
+            'react/react-in-jsx-scope': 'off',
+            'react/prop-types': 'off',
+            'react/no-unescaped-entities': 'off',
+        },
+        settings: {
+            react: {
+                version: 'detect',
             },
-            settings: {
-                'import/resolver': {
-                    typescript: {
-                        alwaysTryTypes: true,
-                        project: './tsconfig.json',
-                    },
-                    node: true,
+        },
+    },
+    {
+        plugins: {
+            import: importPlugin,
+            'unused-imports': unusedImports,
+        },
+        settings: {
+            'import/resolver': {
+                typescript: {
+                    alwaysTryTypes: true,
+                    project: './tsconfig.json',
                 },
-            },
-            rules: {
-                '@typescript-eslint/no-explicit-any': 'off',
-                '@typescript-eslint/consistent-type-imports': [
-                    'error',
-                    {
-                        prefer: 'type-imports',
-                        fixStyle: 'separate-type-imports',
-                    },
-                ],
-                'unused-imports/no-unused-imports': 'error',
-                'unused-imports/no-unused-vars': [
-                    'warn',
-                    { 'vars': 'all', 'varsIgnorePattern': '^_', 'args': 'after-used', 'argsIgnorePattern': '^_' }
-                ],
-                'import/order': [
-                    'error',
-                    {
-                        groups: [
-                            'builtin',
-                            'external',
-                            'internal',
-                            'parent',
-                            'sibling',
-                            'index',
-                            'type',
-                        ],
-                        pathGroups: [
-                            {
-                                pattern: 'react',
-                                group: 'external',
-                                position: 'before',
-                            },
-                            {
-                                pattern: '@inertiajs/**',
-                                group: 'external',
-                                position: 'after',
-                            },
-                            {
-                                pattern: 'lucide-react',
-                                group: 'external',
-                                position: 'after',
-                            },
-                            {
-                                pattern: '@/**',
-                                group: 'internal',
-                                position: 'before',
-                            },
-                        ],
-                        pathGroupsExcludedImportTypes: ['react', 'type'],
-                        alphabetize: { order: 'asc', caseInsensitive: true },
-                    },
-                ],
-                'import/consistent-type-specifier-style': [
-                    'error',
-                    'prefer-top-level',
-                ],
+                node: true,
             },
         },
-        {
-            plugins: {
-                '@stylistic': stylistic,
-            },
-            rules: {
-                '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
-                '@stylistic/padding-line-between-statements': [
-                    'error',
-                    ...paddingAroundControl,
-                ],
-            },
-        },
-        {
-            ignores: [
-                'vendor',
-                'node_modules',
-                'public',
-                'bootstrap/ssr',
-                'tailwind.config.js',
-                'vite.config.ts',
-                'resources/js/actions/**',
-                'resources/js/components/ui/*',
-                'resources/js/routes/**',
-                'resources/js/wayfinder/**',
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    prefer: 'type-imports',
+                    fixStyle: 'separate-type-imports',
+                },
+            ],
+            'unused-imports/no-unused-imports': 'error',
+            'unused-imports/no-unused-vars': [
+                'warn',
+                { 'vars': 'all', 'varsIgnorePattern': '^_', 'args': 'after-used', 'argsIgnorePattern': '^_' }
+            ],
+            'import/order': [
+                'error',
+                {
+                    groups: [
+                        'builtin',
+                        'external',
+                        'internal',
+                        'parent',
+                        'sibling',
+                        'index',
+                        'type',
+                    ],
+                    pathGroups: [
+                        {
+                            pattern: 'react',
+                            group: 'external',
+                            position: 'before',
+                        },
+                        {
+                            pattern: '@inertiajs/**',
+                            group: 'external',
+                            position: 'after',
+                        },
+                        {
+                            pattern: 'lucide-react',
+                            group: 'external',
+                            position: 'after',
+                        },
+                        {
+                            pattern: '@/**',
+                            group: 'internal',
+                            position: 'before',
+                        },
+                    ],
+                    pathGroupsExcludedImportTypes: ['react', 'type'],
+                    alphabetize: { order: 'asc', caseInsensitive: true },
+                },
+            ],
+            'import/consistent-type-specifier-style': [
+                'error',
+                'prefer-top-level',
             ],
         },
-        prettier,
-        {
-            plugins: {
-                '@stylistic': stylistic,
-            },
-            rules: {
-                curly: ['error', 'all'],
-                '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
-            },
+    },
+    {
+        plugins: {
+            '@stylistic': stylistic,
         },
-    ];
+        rules: {
+            '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
+            '@stylistic/padding-line-between-statements': [
+                'error',
+                ...paddingAroundControl,
+            ],
+        },
+    },
+    {
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+            'vite.config.ts',
+            'update_eslint.js',
+            'resources/js/actions/**',
+            'resources/js/components/ui/*',
+            'resources/js/routes/**',
+            'resources/js/wayfinder/**',
+        ],
+    },
+    prettier,
+    {
+        plugins: {
+            '@stylistic': stylistic,
+        },
+        rules: {
+            curly: ['error', 'all'],
+            '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
+        },
+    },
+];
