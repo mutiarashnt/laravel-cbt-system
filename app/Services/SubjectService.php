@@ -3,13 +3,17 @@
 namespace App\Services;
 
 use App\Models\Subject;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class SubjectService
 {
     /**
      * Ambil semua mata pelajaran beserta jumlah soal.
+     *
+     * @return Collection<int, Model>
      */
-    public function getAllWithQuestionCount()
+    public function getAllWithQuestionCount(): Collection
     {
         return Subject::withCount('questions')
             ->latest()
@@ -18,6 +22,8 @@ class SubjectService
 
     /**
      * Simpan mata pelajaran baru.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function store(array $data): Subject
     {
@@ -26,6 +32,8 @@ class SubjectService
 
     /**
      * Perbarui mata pelajaran.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(Subject $subject, array $data): Subject
     {

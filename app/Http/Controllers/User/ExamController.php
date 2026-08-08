@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Services\ExamService;
 use App\Services\ParticipantService;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +26,7 @@ class ExamController extends Controller
      */
     public function index(): Response
     {
-        $userId = auth()->id();
+        $userId = (int) auth()->id();
         $exams = $this->examService->getPublishedExamsForUser($userId);
 
         return Inertia::render('user/exams/index', [
@@ -42,7 +43,7 @@ class ExamController extends Controller
             return redirect()->route('user.exams.index')->with('error', 'Ujian belum dipublikasikan.');
         }
 
-        $userId = auth()->id();
+        $userId = (int) auth()->id();
         $participant = Participant::where('user_id', $userId)
             ->where('exam_id', $exam->id)
             ->first();
@@ -61,13 +62,13 @@ class ExamController extends Controller
     /**
      * User exam working session page.
      */
-    public function session(Exam $exam): Response|RedirectResponse
+    public function session(Exam $exam): SymfonyResponse|RedirectResponse
     {
         if ($exam->status !== 'published') {
             return redirect()->route('user.exams.index')->with('error', 'Ujian belum dipublikasikan.');
         }
 
-        $userId = auth()->id();
+        $userId = (int) auth()->id();
         $participant = Participant::where('user_id', $userId)
             ->where('exam_id', $exam->id)
             ->first();
@@ -90,13 +91,19 @@ class ExamController extends Controller
             app(ParticipantService::class)->startExam($participant);
         }
 
-        $exam->load(['questions.choices']);
+        // Load questions with choices but EXCLUDE is_correct to prevent answer leaking.
+        $exam->load(['questions.choices' => function ($query) {
+            $query->select('id', 'question_id', 'choice_text');
+        }]);
         $existingAnswers = $participant->answers()->get(['question_id', 'choice_id', 'answer_text']);
 
         return Inertia::render('user/exams/session', [
             'exam' => $exam,
             'participant' => $participant,
             'existingAnswers' => $existingAnswers,
+        ])->toResponse(request())->withHeaders([
+            'Cache-Control' => 'no-store, no-cache, must-revalidate',
+            'Pragma' => 'no-cache',
         ]);
     }
 }

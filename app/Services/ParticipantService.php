@@ -6,7 +6,6 @@ use App\Models\Answer;
 use App\Models\Choice;
 use App\Models\Exam;
 use App\Models\Participant;
-use App\Models\Question;
 
 class ParticipantService
 {
@@ -45,32 +44,118 @@ class ParticipantService
     }
 
     /**
-     * Submit answers and calculate score/grade.
+     * Save a single answer without finishing the exam.
+     *
+     * @param array<string, mixed> $answerData
      */
-    public function submitExam(array $answersData, Participant $participant): void
-    {
+    public function saveAnswer(
+        array $answerData,
+        Participant $participant
+    ): void {
         if ($participant->status === 'finished') {
             return;
         }
 
+        $questionId = (int) $answerData['question_id'];
+
+        $questionExists = $participant->exam
+            ->questions()
+            ->where('questions.id', $questionId)
+            ->exists();
+
+        if (! $questionExists) {
+            abort(422, 'Soal tidak valid untuk ujian ini.');
+        }
+
+        $choiceId = isset($answerData['choice_id'])
+            ? (int) $answerData['choice_id']
+            : null;
+
+        $answerText = $answerData['answer_text'] ?? null;
+
+        if ($choiceId !== null) {
+            $choiceExists = Choice::where('id', $choiceId)
+                ->where('question_id', $questionId)
+                ->exists();
+
+            if (! $choiceExists) {
+                abort(422, 'Pilihan jawaban tidak valid.');
+            }
+        }
+
+        Answer::updateOrCreate(
+            [
+                'participant_id' => $participant->id,
+                'question_id' => $questionId,
+            ],
+            [
+                'choice_id' => $choiceId,
+                'answer_text' => $answerText,
+
+                // Jangan bocorkan hasil benar/salah saat autosave.
+                'is_correct' => null,
+                'score' => 0,
+            ]
+        );
+    }
+
+    /**
+     * Submit answers and calculate score/grade.
+     * maxScore is based on ALL questions in the exam, not just the submitted ones.
+     * Unanswered questions are treated as wrong (score = 0).
+     *
+     * @param array<int, array<string, mixed>> $answersData
+     */
+    public function submitExam(
+        array $answersData,
+        Participant $participant
+    ): void {
+        if ($participant->status === 'finished') {
+            return;
+        }
+
+        $exam = Exam::with('questions')
+            ->find($participant->exam_id);
+
+        $allQuestions = $exam
+            ? $exam->questions
+            : collect();
+
         $totalScore = 0;
         $maxScore = 0;
 
+        foreach ($allQuestions as $question) {
+            $maxScore += $question->score ?? 10;
+        }
+
+        $submittedByQuestionId = [];
+
         foreach ($answersData as $item) {
+            $submittedByQuestionId[(int) $item['question_id']] = $item;
+        }
+
+        foreach ($allQuestions as $question) {
+            $questionScore = $question->score ?? 10;
+
+            $item = $submittedByQuestionId[$question->id] ?? null;
+
             $choiceId = $item['choice_id'] ?? null;
             $answerText = $item['answer_text'] ?? null;
-
-            $question = Question::find($item['question_id']);
-            $questionScore = $question ? $question->score : 10;
-            $maxScore += $questionScore;
 
             $isCorrect = null;
             $earnedScore = 0;
 
             if ($choiceId) {
-                $choice = Choice::find($choiceId);
-                $isCorrect = $choice ? $choice->is_correct : false;
-                $earnedScore = $isCorrect ? $questionScore : 0;
+                $choice = /** @var Choice|null $choice */
+                $choice = Choice::find((int) $choiceId);
+
+                $isCorrect = $choice
+                    ? $choice->is_correct
+                    : false;
+
+                $earnedScore = $isCorrect
+                    ? $questionScore
+                    : 0;
             }
 
             $totalScore += $earnedScore;
@@ -78,7 +163,7 @@ class ParticipantService
             Answer::updateOrCreate(
                 [
                     'participant_id' => $participant->id,
-                    'question_id' => $item['question_id'],
+                    'question_id' => $question->id,
                 ],
                 [
                     'choice_id' => $choiceId,
@@ -89,7 +174,9 @@ class ParticipantService
             );
         }
 
-        $grade = $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0;
+        $grade = $maxScore > 0
+            ? round(($totalScore / $maxScore) * 100, 2)
+            : 0;
 
         $participant->update([
             'status' => 'finished',

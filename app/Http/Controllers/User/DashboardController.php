@@ -22,7 +22,7 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
-        $userId = auth()->id();
+        $userId = (int) auth()->id();
 
         $stats = $this->dashboardService->getUserDashboardStats($userId);
         $exams = $this->examService->getPublishedExamsForUser($userId);

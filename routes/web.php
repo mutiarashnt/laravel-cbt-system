@@ -44,6 +44,7 @@ Route::middleware(['auth', 'user'])
 
         Route::post('/participants', [UserParticipantController::class, 'store'])->name('participants.store');
         Route::post('/participants/{participant}/start', [UserParticipantController::class, 'start'])->name('participants.start');
+        Route::post('/participants/{participant}/save-answer', [UserParticipantController::class, 'saveAnswer'])->name('participants.saveAnswer');
         Route::post('/participants/{participant}/submit', [UserParticipantController::class, 'submit'])->name('participants.submit');
     });
 

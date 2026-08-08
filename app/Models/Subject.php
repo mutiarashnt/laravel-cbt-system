@@ -16,6 +16,7 @@ class Subject extends Model
         'description',
     ];
 
+    /** @return HasMany<Question, $this> */
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);

@@ -19,45 +19,71 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
     const questions = exam.questions || [];
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Map initial user answers
-    const [answersMap, setAnswersMap] = useState<
-        Record<number, { choice_id: number | null; answer_text: string | null }>
-    >(() => {
-        const initialMap: Record<
-            number,
-            { choice_id: number | null; answer_text: string | null }
-        > = {};
+        // Map initial user answers
+    const [answersMap, setAnswersMap] = useState<Record<number, { choice_id: number | null; answer_text: string | null }>>(() => {
+        const map: Record<number, { choice_id: number | null; answer_text: string | null }> = {};
         existingAnswers.forEach((ans) => {
-            initialMap[ans.question_id] = {
-                choice_id: ans.choice_id,
-                answer_text: ans.answer_text,
-            };
+            map[ans.question_id] = { choice_id: ans.choice_id, answer_text: ans.answer_text };
         });
-
-        return initialMap;
+        return map;
     });
+
+    // Save answer to server whenever a single answer changes (plain fetch, not Inertia)
+    const saveAnswer = useCallback((questionId: number, data: { choice_id?: number | null; answer_text?: string | null }) => {
+        const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
+
+        fetch(`/user/participants/${participant.id}/save-answer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify({
+                question_id: questionId,
+                choice_id: data.choice_id ?? null,
+                answer_text: data.answer_text ?? null,
+            }),
+        }).catch((err) => {
+            console.error('Autosave error', err);
+        });
+    }, [participant.id]);
+
+    // Update answer map and trigger autosave
+    const updateAnswer = (questionId: number, newData: { choice_id?: number | null; answer_text?: string | null }) => {
+        setAnswersMap((prev) => {
+            const updated = { ...prev };
+            updated[questionId] = {
+                choice_id: newData.choice_id ?? prev[questionId]?.choice_id ?? null,
+                answer_text: newData.answer_text ?? prev[questionId]?.answer_text ?? null,
+            };
+            return updated;
+        });
+        saveAnswer(questionId, newData);
+    };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Timer calculation
-    const [timeLeft, setTimeLeft] = useState<number>(() => {
-        if (!participant.started_at) {
-            return exam.duration * 60;
+    // Timer calculation (Deferred to avoid SSR hydration mismatch)
+    const [timeLeft, setTimeLeft] = useState<number>(exam.duration * 60);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+        if (participant.started_at) {
+            const startTime = new Date(participant.started_at).getTime();
+            const endTime = startTime + exam.duration * 60 * 1000;
+            const remaining = Math.floor((endTime - Date.now()) / 1000);
+            setTimeLeft(remaining > 0 ? remaining : 0);
         }
-
-        const startTime = new Date(participant.started_at).getTime();
-        const endTime = startTime + exam.duration * 60 * 1000;
-        const remaining = Math.floor((endTime - Date.now()) / 1000);
-
-        return remaining > 0 ? remaining : 0;
-    });
+    }, [participant.started_at, exam.duration]);
 
     // Deklarasikan handleSubmitAnswers SEBELUM digunakan di useEffect
+    // Submit all answers at the end (final submission)
     const handleSubmitAnswers = useCallback(() => {
         if (isSubmitting) {
             return;
         }
-
         const payload = {
             answers: Object.entries(answersMap).map(([questionId, val]) => ({
                 question_id: parseInt(questionId),
@@ -65,12 +91,47 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                 answer_text: val.answer_text,
             })),
         };
-
         setIsSubmitting(true);
         router.post(`/user/participants/${participant.id}/submit`, payload, {
             onFinish: () => setIsSubmitting(false),
         });
     }, [isSubmitting, answersMap, participant.id]);
+
+    useEffect(() => {
+        if (participant.status === 'finished') {
+            router.visit(`/user/exams/${exam.id}`, {
+                replace: true,
+            });
+        }
+    }, [participant.status, exam.id]);
+
+    // Reload halaman ketika user menggunakan tombol Back/Forward browser.
+    useEffect(() => {
+        const handlePopState = () => {
+            router.reload();
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
+    // Reload halaman jika Chrome mengembalikan halaman dari bfcache.
+    useEffect(() => {
+        const handlePageShow = (event: PageTransitionEvent) => {
+            if (event.persisted) {
+                router.reload();
+            }
+        };
+
+        window.addEventListener('pageshow', handlePageShow);
+
+        return () => {
+            window.removeEventListener('pageshow', handlePageShow);
+        };
+    }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -107,13 +168,10 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
             return;
         }
 
-        setAnswersMap((prev) => ({
-            ...prev,
-            [currentQuestion.id]: {
-                choice_id: choiceId,
-                answer_text: null,
-            },
-        }));
+        updateAnswer(currentQuestion.id, {
+            choice_id: choiceId,
+            answer_text: null,
+        });
     };
 
     const handleEssayChange = (text: string) => {
@@ -121,13 +179,10 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
             return;
         }
 
-        setAnswersMap((prev) => ({
-            ...prev,
-            [currentQuestion.id]: {
-                choice_id: null,
-                answer_text: text,
-            },
-        }));
+        updateAnswer(currentQuestion.id, {
+            choice_id: null,
+            answer_text: text,
+        });
     };
 
     const confirmSubmit = () => {
@@ -173,14 +228,13 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
 
                 <div className="flex items-center gap-4">
                     <div
-                        className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-sm font-bold ${
-                            timeLeft < 300
-                                ? 'animate-pulse border-red-200 bg-red-50 text-red-600'
-                                : 'bg-muted/50 text-foreground'
-                        }`}
+                        className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-sm font-bold ${timeLeft < 300
+                            ? 'animate-pulse border-red-200 bg-red-50 text-red-600'
+                            : 'bg-muted/50 text-foreground'
+                            }`}
                     >
                         <Clock className="h-4 w-4" />
-                        <span>Sisa Waktu: {formatTimer(timeLeft)}</span>
+                        <span>Sisa Waktu: {isMounted ? formatTimer(timeLeft) : formatTimer(exam.duration * 60)}</span>
                     </div>
 
                     <button
@@ -218,7 +272,7 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                         {/* Options / Answer Input */}
                         <div className="pt-2">
                             {currentQuestion.type === 'multiple_choice' &&
-                            currentQuestion.choices ? (
+                                currentQuestion.choices ? (
                                 <div className="space-y-3">
                                     {currentQuestion.choices.map(
                                         (choice, idx) => {
@@ -236,18 +290,16 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                                                             choice.id,
                                                         )
                                                     }
-                                                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all ${
-                                                        isSelected
-                                                            ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                                                            : 'hover:border-gray-300 hover:bg-gray-50'
-                                                    }`}
+                                                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all ${isSelected
+                                                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                                                        : 'hover:border-gray-300 hover:bg-gray-50'
+                                                        }`}
                                                 >
                                                     <div
-                                                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
-                                                            isSelected
-                                                                ? 'border-primary bg-primary text-primary-foreground'
-                                                                : 'bg-muted text-muted-foreground'
-                                                        }`}
+                                                        className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${isSelected
+                                                            ? 'border-primary bg-primary text-primary-foreground'
+                                                            : 'bg-muted text-muted-foreground'
+                                                            }`}
                                                     >
                                                         {optionLetter}
                                                     </div>
@@ -331,15 +383,13 @@ export default function Session({ exam, participant, existingAnswers }: Props) {
                                     <button
                                         key={q.id}
                                         onClick={() => setCurrentIndex(idx)}
-                                        className={`relative flex h-10 items-center justify-center rounded-lg border text-xs font-bold transition-all ${
-                                            isCurrent
-                                                ? 'border-primary ring-2 ring-primary ring-offset-1'
-                                                : ''
-                                        } ${
-                                            isAnswered
+                                        className={`relative flex h-10 items-center justify-center rounded-lg border text-xs font-bold transition-all ${isCurrent
+                                            ? 'border-primary ring-2 ring-primary ring-offset-1'
+                                            : ''
+                                            } ${isAnswered
                                                 ? 'border-green-600 bg-green-600 text-white'
                                                 : 'border-gray-200 bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {idx + 1}
                                     </button>

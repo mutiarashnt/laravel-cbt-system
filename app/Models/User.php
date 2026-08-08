@@ -55,11 +55,13 @@ class User extends Authenticatable
         ];
     }
 
+    /** @return HasMany<Question, $this> */
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class, 'created_by');
     }
 
+    /** @return HasMany<Participant, $this> */
     public function participants(): HasMany
     {
         return $this->hasMany(Participant::class);

@@ -6,6 +6,7 @@ use App\Models\Exam;
 use App\Models\Participant;
 use App\Models\Question;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class DashboardService
@@ -13,6 +14,7 @@ class DashboardService
     /**
      * Get dashboard statistics for a specific user.
      */
+    /** @return array<string, int> */
     public function getUserDashboardStats(int $userId): array
     {
         $participations = Participant::where('user_id', $userId)->get();
@@ -28,6 +30,7 @@ class DashboardService
     /**
      * Get dashboard statistics for admin.
      */
+    /** @return array<string, int> */
     public function getAdminDashboardStats(): array
     {
         return [
@@ -42,6 +45,7 @@ class DashboardService
      * Get recent exams for admin dashboard.
      *
      * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection<int, Model>
      */
     public function getRecentExams(int $limit = 5)
     {

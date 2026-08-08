@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\Models\Question;
 use App\Models\Subject;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class QuestionService
 {
     /**
      * Ambil semua soal beserta relasi choices dan subject.
+     *
+     * @return Collection<int, Model>
      */
-    public function getAllWithRelations()
+    public function getAllWithRelations(): Collection
     {
         return Question::with(['choices', 'subject'])
             ->latest()
@@ -19,16 +23,20 @@ class QuestionService
 
     /**
      * Ambil semua subject (untuk dropdown).
+     *
+     * @return Collection<int, Model>
      */
-    public function getAllSubjects()
+    public function getAllSubjects(): Collection
     {
         return Subject::orderBy('name')->get();
     }
 
     /**
      * Ambil semua subject beserta jumlah soal.
+     *
+     * @return Collection<int, Model>
      */
-    public function getAllSubjectsWithQuestionCount()
+    public function getAllSubjectsWithQuestionCount(): Collection
     {
         return Subject::withCount('questions')
             ->orderBy('name')
@@ -37,6 +45,8 @@ class QuestionService
 
     /**
      * Simpan soal baru beserta pilihan jawaban.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function store(array $data): Question
     {
@@ -59,6 +69,8 @@ class QuestionService
 
     /**
      * Perbarui soal dan pilihan jawaban.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(Question $question, array $data): Question
     {

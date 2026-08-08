@@ -20,31 +20,37 @@ class Question extends Model
         'created_by',
     ];
 
+    /** @return BelongsTo<Subject, $this> */
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
     }
 
+    /** @return HasMany<Choice, $this> */
     public function choices(): HasMany
     {
         return $this->hasMany(Choice::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /** @return HasMany<ExamQuestion, $this> */
     public function examQuestions(): HasMany
     {
         return $this->hasMany(ExamQuestion::class);
     }
 
+    /** @return BelongsToMany<Exam, $this> */
     public function exams(): BelongsToMany
     {
         return $this->belongsToMany(Exam::class, 'exam_questions');
     }
 
+    /** @return HasMany<Answer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);

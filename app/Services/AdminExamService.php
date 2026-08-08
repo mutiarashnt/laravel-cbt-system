@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\Models\Exam;
 use App\Models\Question;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class AdminExamService
 {
     /**
      * Ambil semua ujian beserta relasi creator, questions, dan participants.
+     *
+     * @return Collection<int, Model>
      */
-    public function getAll()
+    public function getAll(): Collection
     {
         return Exam::with('creator')
             ->withCount('questions', 'participants')
@@ -20,14 +24,18 @@ class AdminExamService
 
     /**
      * Ambil semua soal untuk form create/edit exam.
+     *
+     * @return Collection<int, Model>
      */
-    public function getAllQuestions()
+    public function getAllQuestions(): Collection
     {
         return Question::with(['choices', 'subject'])->latest()->get();
     }
 
     /**
      * Simpan ujian baru beserta sinkronisasi soal.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function store(array $data): Exam
     {
@@ -48,6 +56,8 @@ class AdminExamService
 
     /**
      * Perbarui ujian beserta sinkronisasi soal.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function update(Exam $exam, array $data): Exam
     {

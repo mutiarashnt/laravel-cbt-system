@@ -31,6 +31,7 @@ class ExamService
     /**
      * Get exam details and format the results if the user has finished.
      */
+    /** @return array<string, mixed>|null */
     public function getExamResultData(Exam $exam, ?Participant $participant): ?array
     {
         if (! $participant || $participant->status !== 'finished') {
@@ -49,7 +50,7 @@ class ExamService
             'max_score' => $participant->max_score,
             'grade' => $participant->grade,
             'correct_count' => $answers->where('is_correct', true)->count(),
-            'wrong_count' => $answers->where('is_correct', false)->count(),
+            'wrong_count' => $answers->whereStrict('is_correct', false)->count(),
             'unanswered_count' => $answers->whereNull('is_correct')->count(),
             'answers' => $answers->map(function ($answer) {
                 return [
